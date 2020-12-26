@@ -1,0 +1,7 @@
+{
+  "name": "sakeDB",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
