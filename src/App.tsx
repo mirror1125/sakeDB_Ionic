@@ -1,9 +1,13 @@
-import React from "react";
-import { Redirect, Route } from "react-router-dom";
-import { IonApp, IonRouterOutlet } from "@ionic/react";
+import React, { useEffect, useState } from "react";
+import { Redirect, Route, RouteComponentProps } from "react-router-dom";
+import { IonApp, IonRouterOutlet, useIonViewWillEnter } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
+
+/* 画面コンポーネント */
+import Login from "./pages/LoginUser";
 import Home from "./pages/Home";
-import Register from "./pages/RegisterSake";
+import RegisterUser from "./pages/RegisterUser";
+import Welcome from "./pages/Welcome";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -24,16 +28,54 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path="/home" component={Home} exact={true} />
-        <Route path="/register" component={Register} />
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+/* utility */
+import { getItem } from "./utility/LocalStorage";
+
+const App: React.FC = () => {
+  console.log("useEffect on App");
+  const [finishedGetStarted, setFinishedGetStarted] = useState(false);
+
+  // useIonWillEnterはApp.tsxで発火しなかったので
+  // useEffectを使用
+  useEffect(() => {
+    // アカウント登録済み？
+    getItem("finishedGetStarted")
+      .then((res) => {
+        console.log(res);
+        if (res.value === "true") {
+          setFinishedGetStarted(true);
+        } else {
+          setFinishedGetStarted(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          {/* TODO: リフレッシュトークンが生きていればログインを省略する */}
+          <Route
+            exact={true}
+            path="/"
+            render={() => {
+              return finishedGetStarted ? <Login /> : <RegisterUser />;
+
+              // ↓ユーザ登録デバッグ用
+              //return <RegisterUser />;
+            }}
+          />
+          <Route path="/home" component={Home} />
+          <Route path="/welcome" component={Welcome} />
+          <Route path="/login" component={Login} />
+          <Route path="/registeruser" component={RegisterUser} />
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;
