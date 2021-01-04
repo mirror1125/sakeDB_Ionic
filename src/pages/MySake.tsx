@@ -1,3 +1,6 @@
+import mobiscroll from "@mobiscroll/react";
+import "@mobiscroll/react/dist/css/mobiscroll.min.css";
+
 import {
   IonHeader,
   IonToolbar,
@@ -12,28 +15,30 @@ import {
   IonFabButton,
   IonIcon,
   IonPage,
+  IonInput,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import React, { useState } from "react";
 
-import { registerMySake } from "../api/mySakeApi";
+import { registerMySake, getMySakeList } from "../api/mySakeApi";
 
 function MySake() {
   const [searchText, setSearchText] = useState("");
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
-          <IonTitle>わたしの酒</IonTitle>
+          <IonTitle>ホーム</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent className="ion-padding">
         <IonSearchbar
           value={searchText}
           onIonChange={(e) => setSearchText(e.detail.value!)}
           showCancelButton="never"
         ></IonSearchbar>
         <IonList>
+          <mobiscroll.Rating></mobiscroll.Rating>
           <IonItem>
             <IonThumbnail slot="end">
               <img alt="sake" src="../assets/images/drink_beer.png" />
@@ -76,7 +81,20 @@ function MySake() {
           </IonItem>
         </IonList>
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton onClick={registerMySake}>
+          {/* <IonFabButton onClick={registerMySake}>
+            <IonIcon icon={add} />
+          </IonFabButton> */}
+          <IonFabButton
+            onClick={() => {
+              getMySakeList()
+                .then((res) => {
+                  console.log(res);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }}
+          >
             <IonIcon icon={add} />
           </IonFabButton>
         </IonFab>

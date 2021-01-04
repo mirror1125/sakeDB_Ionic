@@ -39,6 +39,7 @@ const LoginUser: React.FC = () => {
   const saveTokenInfo = (data: any) => {
     const tokenInfo = {
       accsessToken: String(data.accessToken.jwtToken),
+      uuid: String(data.accessToken.payload.sub),
       tokenExp: String(data.accessToken.payload.exp),
       idToken: String(data.idToken.jwtToken),
       refreshToken: String(data.refreshToken.token),
