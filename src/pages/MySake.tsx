@@ -20,10 +20,12 @@ import {
 import { add } from "ionicons/icons";
 import React, { useState } from "react";
 
+import RegisterSakeModal from "./RegisterSakeModal";
 import { registerMySake, getMySakeList } from "../api/mySakeApi";
 
 function MySake() {
   const [searchText, setSearchText] = useState("");
+  const [showModal, setShowModal] = useState(false);
   return (
     <IonPage>
       <IonHeader translucent>
@@ -81,10 +83,14 @@ function MySake() {
           </IonItem>
         </IonList>
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          {/* <IonFabButton onClick={registerMySake}>
-            <IonIcon icon={add} />
-          </IonFabButton> */}
           <IonFabButton
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
+            <IonIcon icon={add} />
+          </IonFabButton>
+          {/* <IonFabButton
             onClick={() => {
               getMySakeList()
                 .then((res) => {
@@ -96,8 +102,15 @@ function MySake() {
             }}
           >
             <IonIcon icon={add} />
-          </IonFabButton>
+          </IonFabButton> */}
         </IonFab>
+        <RegisterSakeModal
+          isOpen={showModal}
+          callback={(res) => {
+            console.log(res);
+            setShowModal(false);
+          }}
+        />
       </IonContent>
     </IonPage>
   );
